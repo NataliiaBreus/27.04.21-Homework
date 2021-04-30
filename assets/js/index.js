@@ -157,12 +157,15 @@ function submitHandler (event) {
   const {
     target,
     target: {
-      elements: {test2 },
+      elements: {test2: {value: test2Value} },
     },
   } = event;
-
-  arr.push(test2.value);
-  list.append(createListItem(test2.value));
+  const value = test2Value.trim(); //убрали пробелы
+//добавить проверку (по заданию 4)
+  if (value && !arr.includes(value)) {
+      arr.push(value);
+      list.append(createListItem(value));
+  }
 
   target.reset();
 }
@@ -170,9 +173,27 @@ function submitHandler (event) {
 // Task 3
 function createListItem(value) {
     const listItem = document.createElement('li');
-    listItem.innerText = value;
+    
+    const btn = createDeletedListButton(deleteHandler.bind(value));
+    listItem.append(document.createTextNode(value), btn);
 
     return listItem;
+}
+
+// task 5
+
+function createDeleteListButton(onDelete) {
+    const btn = document.createElement('button');
+    btn.innerText = 'x';
+    btn.addEventListener('click', onDelete);
+    return btn;
+}
+
+function deleteHandler({target: {parentNode}}) {
+    console.dir(parentNode);
+    const textInfo = parentNode.querySelector(".textInfo");
+    arr.splice(arr.indexOf(textInfo.innerText), 1);
+    parentNode.remove();
 }
 
 
